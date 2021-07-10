@@ -11,12 +11,9 @@ fun main(args: Array<String>) {
     var records = mutableMapOf( "001" to "and Justice for All", "002" to "Load", "010" to "Number of the Beast", "020" to "Paranoid")
 
     val interpol = Artist(
-        "Interpol",
-        5645789,
-        "Interpol es una banda de post punk estadounidense de Manhattan, Nueva York",
-        15,
-        5,
-        5
+        1263564,
+        cancionesTop(12, "Do I wanna know?", "Sunshine"),
+        discografia("Beautiful", 15, "1996")
     )
 
     //Esta lista guardara objetos playlist

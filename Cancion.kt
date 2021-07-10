@@ -31,7 +31,7 @@ class Cancion(
   }
 
   //Funcion repetir la cancion en curso
-  fun anteriorCancion(nombreCancion: String: String){
+  fun anteriorCancion(nombreCancion: String){
     println("Repetir Canción.")
   }
 

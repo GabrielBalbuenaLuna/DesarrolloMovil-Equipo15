@@ -1,7 +1,7 @@
 class User(
   val username: String, 
   val password: String, 
-  val playlists: Int = 0,
+  var playlists: Int = 0,
   val seguidores: Int = 0)
   {
     init{
