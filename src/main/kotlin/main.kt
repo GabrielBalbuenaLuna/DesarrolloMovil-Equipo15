@@ -149,16 +149,21 @@ fun main(args: Array<String>) {
                                             PLAYLISTS
                                  ==================================
                                 """.trimIndent())
-                                for (playlist in userPlaylist){
-                                    println("$c.- ${playlist.nombrePlaylist}")
-                                    c++
-                                }
-                                print("Nombre de playlist: ")
-                                var nomPlay = readLine().toString()
+                                // Se verifica si ya existen playlists añadidas para el usuario
+                                if (userPlaylist.isEmpty()){
+                                    println("$user aún no tienes ninguna playlist añadida.")
+                                } else {
+                                    for (playlist in userPlaylist){
+                                        println("$c.- ${playlist.nombrePlaylist}")
+                                        c++
+                                    }
+                                    print("Nombre de la playlist: ")
+                                    var nomPlay = readLine().toString()
 
-                                for (playlist in userPlaylist){
-                                    if (nomPlay.equals(playlist.nombrePlaylist)){
-                                        playlist.verPlaylist()
+                                    for (playlist in userPlaylist) {
+                                        if (nomPlay.equals(playlist.nombrePlaylist)) {
+                                            playlist.verPlaylist()
+                                        }
                                     }
                                 }
                             }
@@ -205,10 +210,10 @@ fun menuLogIn(user: String, playlist: String){
     | 2. Ver Albumes                   |
     | 3. Ver Canciones                 |
     | 4. Reproducción aleatoria        |
-    | 5. Añadir models.Playlist               |
+    | 5. Añadir models.Playlist        |
     | 6. Añadir Canción a playlist     |
     | 7. Eliminar cancion de playlist  |
-    | 8. Ver models.Playlist                  |
+    | 8. Ver models.Playlist           |
     | 9. Salir                         |
     |                                  |
      ----------------------------------
@@ -222,7 +227,7 @@ fun pantallaArtista(artist: String, topSongs: Int){
      ----------------------------------
     |            BEDU MUSIC            |
     |                                  |
-    | $artist          
+    | $artist                          |
     |                                  |
     | 1. Ver Artistas                  |
     | 2. Ver Albumes                   |
