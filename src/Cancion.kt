@@ -5,11 +5,11 @@ class Cancion(
   val albumCancion: String,
   val duracionCancion: Float,
   val anioLanzamientoCancion: String)
-  {
-    init{
-      println("Objeto canción creado!")
-    }
-  
+{
+  init{
+    println("Objeto canción creado!")
+  }
+
   //Funcion reproducir cancion
   fun reproducir(){
     println("Reproduciendo Canción.")
@@ -31,7 +31,7 @@ class Cancion(
   }
 
   //Funcion repetir la cancion en curso
-  fun anteriorCancion(nombreCancion: String: String){
+  fun anteriorCancion(nombreCancion: String){
     println("Repetir Canción.")
   }
 
@@ -39,7 +39,4 @@ class Cancion(
   fun reproduccionAleatoria(){
     println("Modo Aleatorio.")
   }
-
-    //Comentario de revision
 }
-
