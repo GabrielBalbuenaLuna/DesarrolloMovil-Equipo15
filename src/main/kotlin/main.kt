@@ -1,3 +1,6 @@
+import models.Playlist
+import models.User
+
 fun main(args: Array<String>) {
 
     //Map para guardar usuarios
@@ -139,7 +142,7 @@ fun main(args: Array<String>) {
                                     }
                                 }
                             }
-                            "8" -> { //Ver Playlist
+                            "8" -> { //Ver models.Playlist
                                 var c = 1
                                 println("""
                                  ==================================
@@ -202,10 +205,10 @@ fun menuLogIn(user: String, playlist: String){
     | 2. Ver Albumes                   |
     | 3. Ver Canciones                 |
     | 4. Reproducción aleatoria        |
-    | 5. Añadir Playlist               |
+    | 5. Añadir models.Playlist               |
     | 6. Añadir Canción a playlist     |
     | 7. Eliminar cancion de playlist  |
-    | 8. Ver Playlist                  |
+    | 8. Ver models.Playlist                  |
     | 9. Salir                         |
     |                                  |
      ----------------------------------
