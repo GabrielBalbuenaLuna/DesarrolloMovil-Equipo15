@@ -1,11 +1,17 @@
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import models.Cancion
 import models.Playlist
 import models.User
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.resume
 
-fun main(args: Array<String>) {
-
+fun main(args: Array<String>) = runBlocking {
     //Map para guardar usuarios
-    var users = mutableMapOf("root" to "1234", "Elias" to "5678")
+    val users = mutableListOf<User>(
+        User("root", "1234", 120, 2),
+        User("Elias", "5678", 0, 0)
+    )
 
     //Map de Artistas
     var artist = mutableMapOf( "001" to "Metallica", "010" to "Iron Maiden", "020" to "Black Sabbath")
@@ -58,8 +64,13 @@ fun main(args: Array<String>) {
                 val pass = readLine()
 
                 //Validar credenciales
-                if(users[user].equals(pass)){ //Verificar que el usuario corresponda a la contraseña
-                    val usuario = User(user.toString(), pass.toString()) //Crear objeto usuario
+                // Simulacion de request a un servidor
+                try {
+                    println("Iniciando recuperación de usuario")
+                val usuario = users.find{it.username == user}
+                if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
+                        val usuario = fetchUserCoroutine(user.toString(), pass.toString(), true)
+                        println(usuario)
                     //Una vez validado el usuario se pasa al siguiente while y se imprime otro menu
                     while(flagTwo){
                         println(menuLogIn(usuario.username, usuario.playlists.toString())) //Imprimir menu usuario
@@ -89,6 +100,7 @@ fun main(args: Array<String>) {
                                 menuCanciones()
                                 when(readLine()) {
                                     "1" -> {
+                                        //Opcion para elegir cancion a reproducir y que se cambie descendentemente
                                         println("Numero de la cancion: ")
                                         var songNumber = readLine()?.toInt()
                                         val chosenSong = songs.get(songNumber)
@@ -105,6 +117,7 @@ fun main(args: Array<String>) {
                                         }
                                     }
                                     "2" -> {
+                                        //Opcion para reproducir cancion y se cambie ascendentemente
                                         println("Numero de la cancion: ")
                                         val songNumber = readLine()?.toInt()
                                         val chosenSong = songs.get(songNumber)
@@ -121,6 +134,7 @@ fun main(args: Array<String>) {
                                         }
                                     }
                                     "3" -> {
+                                        //Modo de repeticion para que se repita la cancion hasta que el usuario desee detenerlo
                                         var modoRepeticion: Boolean = true
                                         println("Numero de la cancion: ")
                                         val songNumber = readLine()?.toInt()
@@ -129,6 +143,7 @@ fun main(args: Array<String>) {
                                         while (modoRepeticion) {
                                             cont++
                                             chosenSong?.reperirCancion(cont)
+                                            //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
                                             val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
@@ -137,10 +152,13 @@ fun main(args: Array<String>) {
                                         }
                                     }
                                     "4" -> {
+                                        //Modo aleatorio de reproduccion
                                         var modoAleatorio: Boolean = true
                                         while (modoAleatorio) {
+                                            // se hace el calculo aleatorio de la cancion a reproducir despues
                                             val aleatorio = (1..songs.size).random()
                                             val chosenSong = songs.get(aleatorio)
+                                            //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
                                             val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
@@ -251,7 +269,11 @@ fun main(args: Array<String>) {
                     }
                     //Si los datos ingresados en el LogIn no son correctos
                 }else{
-                    println("Credenciales incorrectas..")
+                    fetchUserCoroutine(user.toString(), pass.toString(), false)
+                }
+                } catch (exception: Exception) {
+                    println("Usuario y contraseña no coinciden o no existe usuario")
+                    println("Hubo un fallo: $exception")
                 }
             }
             //Añadir un nuevo usuario
@@ -261,7 +283,7 @@ fun main(args: Array<String>) {
                 print("Ingresa una contraseña: ")
                 val pass = readLine()
                 //
-                users.put(user.toString(), pass.toString())
+                users.add(User(user.toString(), pass.toString()))
             }
             //Terminar programa
             "3" -> {
@@ -331,4 +353,36 @@ fun menuCanciones(){
     |                                   |
      -----------------------------------
      """)
+}
+
+// Se evalua la condicion para devolver fallo o estado exitoso, se simula la espera del request con Thead.sleep
+private fun fetchUser(callback: Callback, username: String, password:String, isSuccess: Boolean) {
+    Thread {
+        Thread.sleep(3_000)
+
+        if(isSuccess){
+            callback.onSuccess(
+                User(
+                    username,
+                    password
+                ))
+        }
+        else {
+            callback.onFailure(Exception("Excepción genérica"))
+        }
+    }.start()
+}
+
+//Se simula la recuperacion del usuario y este devolvera al usuario si las credenciales coinciden o lanzará una excepcion si hay un error
+private suspend fun fetchUserCoroutine(username: String, password:String, isSuccess:Boolean): User = suspendCancellableCoroutine {
+        cancellableContinuation ->
+    fetchUser(object : Callback {
+        override fun onSuccess(user: User) {
+            cancellableContinuation.resume(user)
+        }
+
+        override fun onFailure(exception: Exception) {
+            cancellableContinuation.resumeWithException(exception)
+        }
+    }, username, password, isSuccess)
 }

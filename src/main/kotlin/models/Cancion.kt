@@ -1,9 +1,5 @@
 package models
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-
 class Cancion(
   val nombreCancion: String,
   val autorCancion: String,
@@ -23,11 +19,16 @@ class Cancion(
     var inicioMinutos = 0
     var inicioSegundos = 0
     var tiempoAcumulado: Long = 0
+    //calculando los segundos de la duracion de la cancion
     val finalSegundos = (number.substring(number.indexOf('.') + 1)).toInt()
+    //calculando los minutos de la duracion de la cancion
     val finalMinutos = (number.substring(0, number.indexOf('.'))).toInt()
+    //se cancula el total de milisegundos que dura la cancion
+    // para que no sea tan lenta la simulacion se acortan un poco
     val totalMiliSegundos = (((finalMinutos * 60) + finalSegundos) * 10).toLong()
     var rayitaGruesa = ""
     var rayitaDelgada = "──────────────────────────────"
+    //Se dividen el total de milisegundos que avanzaran por cada "rayita" de musica
     val cambioRayita = (totalMiliSegundos / 30).toLong();
     println("""
               $nombreCancion - $autorCancion
