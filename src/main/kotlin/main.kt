@@ -1,3 +1,4 @@
+import models.Cancion
 import models.Playlist
 import models.User
 
@@ -9,7 +10,12 @@ fun main(args: Array<String>) {
     //Map de Artistas
     var artist = mutableMapOf( "001" to "Metallica", "010" to "Iron Maiden", "020" to "Black Sabbath")
     //Map de Canciones
-    var songs = mutableMapOf( "001" to "One", "002" to "Hero of the day", "010" to "The Number of the Beast", "020" to "Paranoid")
+    var songs = mutableMapOf<Int, Cancion>(
+        1 to Cancion("One", "Metallica", "Rock", "and Justice for All", 7.27f, "1988"),
+        2 to Cancion("Hero of the day", "Metallica", "Rock", "Load", 4.21f, "1996"),
+        3 to Cancion("The Number of the Beast' You", "Iron Maiden", "Rock", "Number of the Beast", 4.50f, "1982"),
+        4 to Cancion("Paranoid", "Black Sabbath", "Rock", "Paranoid", 2.48f, "1970"),
+    )
     //Map de Albumes
     var records = mutableMapOf( "001" to "and Justice for All", "002" to "Load", "010" to "Number of the Beast", "020" to "Paranoid")
 
@@ -71,8 +77,78 @@ fun main(args: Array<String>) {
                                 }
                             }
                             "3" -> {
+                                println("""
+                                 ==================================
+                                            CANCIONES
+                                 ==================================
+                                """.trimIndent())
                                 for ((k, v) in songs) {
-                                    println("- $v")
+                                    println("$k. ${v.nombreCancion}")
+                                }
+                                println("==================================")
+                                menuCanciones()
+                                when(readLine()) {
+                                    "1" -> {
+                                        println("Numero de la cancion: ")
+                                        var songNumber = readLine()?.toInt()
+                                        val chosenSong = songs.get(songNumber)
+                                        chosenSong?.reproducir()
+                                        if (songNumber != null) {
+                                            while (songNumber > 0) {
+                                                songNumber--
+                                                val previousSong = songs.get(songNumber)
+                                                previousSong?.anteriorCancion()
+                                                if(songNumber == 1) {
+                                                    previousSong?.pausar()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "2" -> {
+                                        println("Numero de la cancion: ")
+                                        val songNumber = readLine()?.toInt()
+                                        val chosenSong = songs.get(songNumber)
+                                        chosenSong?.reproducir()
+                                        val songsSize = songs.size
+                                        if (songNumber != null) {
+                                            for(cambio in (songNumber + 1)..songsSize) {
+                                                val nextSong = songs.get(cambio)
+                                                nextSong?.siguienteCancion()
+                                                if (cambio == songsSize) {
+                                                    nextSong?.pausar()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    "3" -> {
+                                        var modoRepeticion: Boolean = true
+                                        println("Numero de la cancion: ")
+                                        val songNumber = readLine()?.toInt()
+                                        val chosenSong = songs.get(songNumber)
+                                        var cont = 0
+                                        while (modoRepeticion) {
+                                            cont++
+                                            chosenSong?.reperirCancion(cont)
+                                            println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
+                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
+                                            if(opcAleatoria == 'P') {
+                                                modoRepeticion = false
+                                            }
+                                        }
+                                    }
+                                    "4" -> {
+                                        var modoAleatorio: Boolean = true
+                                        while (modoAleatorio) {
+                                            val aleatorio = (1..songs.size).random()
+                                            val chosenSong = songs.get(aleatorio)
+                                            println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
+                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
+                                            if(opcAleatoria == 'P') {
+                                                modoAleatorio = false
+                                            }
+                                            chosenSong?.reproduccionAleatoria(modoAleatorio)
+                                        }
+                                    }
                                 }
                             }
                             "4" -> { //Reproducción aleatoria
@@ -231,5 +307,23 @@ fun pantallaArtista(artist: String, topSongs: Int){
     | 5. Salir                         |
     |                                  |
      ----------------------------------
+     """)
+}
+
+//Menu para las acciones que puede hacer el usuario para las canciones
+fun menuCanciones(){
+
+    println("""
+     -----------------------------------
+    |            BEDU MUSIC             |
+    |                                   |
+    |                                   |
+    | 1. Reproducir cancion(descendente)|
+    | 2. Reproducir cancion(ascendente) |
+    | 3. Reproducir una sola canción    |
+    | 4. Reproducción aleatoria         |
+    | 5. Regresar al menu anterior      |
+    |                                   |
+     -----------------------------------
      """)
 }

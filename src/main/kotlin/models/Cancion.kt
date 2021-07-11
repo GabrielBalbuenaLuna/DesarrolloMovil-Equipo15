@@ -1,5 +1,9 @@
 package models
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 class Cancion(
   val nombreCancion: String,
   val autorCancion: String,
@@ -12,33 +16,78 @@ class Cancion(
     println("Objeto canción creado!")
   }
 
+  var number = duracionCancion.toString()
+
   //Funcion reproducir cancion
-  fun reproducir(){
-    println("Reproduciendo Canción.")
+  fun reproducir() {
+    var inicioMinutos = 0
+    var inicioSegundos = 0
+    var tiempoAcumulado: Long = 0
+    val finalSegundos = (number.substring(number.indexOf('.') + 1)).toInt()
+    val finalMinutos = (number.substring(0, number.indexOf('.'))).toInt()
+    val totalMiliSegundos = (((finalMinutos * 60) + finalSegundos) * 10).toLong()
+    var rayitaGruesa = ""
+    var rayitaDelgada = "──────────────────────────────"
+    val cambioRayita = (totalMiliSegundos / 30).toLong();
+    println("""
+              $nombreCancion - $autorCancion
+              VOLUME: ▁▂▃▂▃▂▃▂▃▄▅▆▅▆▅▆▇ 100%
+              ↻        ⊲  Ⅱ  ⊳        ↺""".trimIndent())
+    for(cambio in 0..totalMiliSegundos step cambioRayita) {
+      print("\r$inicioMinutos:$inicioSegundos $rayitaGruesa❍$rayitaDelgada $finalMinutos:$finalSegundos")
+      Thread.sleep(cambioRayita)
+      rayitaGruesa += "━"
+      tiempoAcumulado += cambioRayita
+      if (rayitaDelgada.length > 0) {
+        rayitaDelgada = rayitaDelgada.substring(0, rayitaDelgada.length - 1)
+      }
+      inicioMinutos = (tiempoAcumulado / 600).toInt()
+      inicioSegundos = (tiempoAcumulado % 600).toInt()
+    }
   }
 
   //Funcion pausar la cancion
   fun pausar(){
-    println("Pausar Canción.")
+    println()
+    println()
+    println("Se detuvo la reproducción")
+    println()
   }
 
   //Funcion saltar a la siguiente canción
   fun siguienteCancion(){
+    println()
+    println()
     println("Siguiente Canción.")
+    reproducir()
+    println()
   }
 
   //Funcion saltar a la cancion previa
   fun anteriorCancion(){
+    println()
+    println()
     println("Canción Anterior.")
+    reproducir()
+    println()
   }
 
   //Funcion repetir la cancion en curso
-  fun anteriorCancion(nombreCancion: String){
-    println("Repetir Canción.")
+  fun reperirCancion(numeroRepeticion: Int) {
+    println()
+    println()
+    println("Repeticion numero $numeroRepeticion")
+    reproducir()
+    println()
   }
 
   //Funcion reproducir las canciones aleatoriamente
-  fun reproduccionAleatoria(){
-    println("Modo Aleatorio.")
+  fun reproduccionAleatoria(modoAleatorio: Boolean) {
+    println("-----------------Modo aleatorio-----------------")
+    if(modoAleatorio) {
+      reproducir()
+    } else {
+      pausar()
+    }
   }
 }
