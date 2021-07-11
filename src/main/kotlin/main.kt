@@ -103,16 +103,14 @@ fun main(args: Array<String>) = runBlocking {
                                         //Opcion para elegir cancion a reproducir y que se cambie descendentemente
                                         println("Numero de la cancion: ")
                                         var songNumber = readLine()?.toInt()
-                                        val chosenSong = songs.get(songNumber)
-                                        chosenSong?.reproducir()
                                         if (songNumber != null) {
                                             while (songNumber > 0) {
-                                                songNumber--
                                                 val previousSong = songs.get(songNumber)
                                                 previousSong?.anteriorCancion()
                                                 if(songNumber == 1) {
                                                     previousSong?.pausar()
                                                 }
+                                                songNumber--
                                             }
                                         }
                                     }
@@ -120,11 +118,9 @@ fun main(args: Array<String>) = runBlocking {
                                         //Opcion para reproducir cancion y se cambie ascendentemente
                                         println("Numero de la cancion: ")
                                         val songNumber = readLine()?.toInt()
-                                        val chosenSong = songs.get(songNumber)
-                                        chosenSong?.reproducir()
                                         val songsSize = songs.size
                                         if (songNumber != null) {
-                                            for(cambio in (songNumber + 1)..songsSize) {
+                                            for(cambio in (songNumber)..songsSize) {
                                                 val nextSong = songs.get(cambio)
                                                 nextSong?.siguienteCancion()
                                                 if (cambio == songsSize) {
@@ -353,6 +349,8 @@ fun menuCanciones(){
     |                                   |
      -----------------------------------
      """)
+    println(" ")
+    print("Opcion: ")
 }
 
 // Se evalua la condicion para devolver fallo o estado exitoso, se simula la espera del request con Thead.sleep
