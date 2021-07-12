@@ -3,6 +3,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import models.Cancion
 import models.Playlist
 import models.User
+import java.io.File
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
 
@@ -141,7 +142,7 @@ fun main(args: Array<String>) = runBlocking {
                                             chosenSong?.reperirCancion(cont)
                                             //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
-                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
+                                            val opcAleatoria = readLine()?.get(0)?.toUpperCase() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
                                                 modoRepeticion = false
                                             }
@@ -156,7 +157,7 @@ fun main(args: Array<String>) = runBlocking {
                                             val chosenSong = songs.get(aleatorio)
                                             //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
-                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
+                                            val opcAleatoria = readLine()?.get(0)?.toUpperCase() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
                                                 modoAleatorio = false
                                             }
@@ -172,16 +173,20 @@ fun main(args: Array<String>) = runBlocking {
                                 print("Nombre de la playlist: ")
                                 var nombrePlaylist = readLine().toString()
 
-                                var miPlaylist = Playlist(
-                                    nombrePlaylist,
-                                    usuario.username,
-                                    2,
-                                    31,
-                                    mutableMapOf("Evil" to "Interpol", "Someday" to "The Strokes")
-                                )
-
-                                userPlaylist.add(miPlaylist)
-                                usuario.playlists++
+                                if(nombrePlaylist!!.isEmpty()) {
+                                    println("Imposible añadir canción...")
+                                    println("Error: se ingresó un campo vacío en la canción o artista")
+                                }else {
+                                    var miPlaylist = Playlist(
+                                        nombrePlaylist,
+                                        usuario.username,
+                                        2,
+                                        31,
+                                        mutableMapOf("Evil" to "Interpol", "Someday" to "The Strokes")
+                                    )
+                                    userPlaylist.add(miPlaylist)
+                                    usuario.playlists++
+                                }
                             }
                             "6" -> { //Añadir una cancion a la playlist
                                 print("Nombre de la cancion: ")
@@ -189,24 +194,31 @@ fun main(args: Array<String>) = runBlocking {
                                 print("Nombre del artista: ")
                                 var artista = readLine().toString()
 
-                                var c = 1
-                                println("""
-                                 ==================================
-                                            PLAYLISTS
-                                 ==================================
-                                """.trimIndent())
-                                for (playlist in userPlaylist){
-                                    println("$c.- ${playlist.nombrePlaylist}")
-                                    c++
-                                }
-                                print("Nombre de playlist: ")
-                                var nomPlayLi = readLine().toString()
+                                // Se verifica que no se haya presionado enter sin ingresar los datos
+                                if(song!!.isEmpty() || artista!!.isEmpty()) {
+                                    println("Imposible añadir canción...")
+                                    println("Error: se ingresó un campo vacío en la canción o artista")
+                                } else{
+                                    var c = 1
+                                    println("""
+                                     ==================================
+                                                PLAYLISTS
+                                     ==================================
+                                    """.trimIndent())
+                                    for (playlist in userPlaylist){
+                                        println("$c.- ${playlist.nombrePlaylist}")
+                                        c++
+                                    }
+                                    print("Nombre de playlist: ")
+                                    var nomPlayLi = readLine().toString()
 
-                                for (playlist in userPlaylist){
-                                    if (nomPlayLi.equals(playlist.nombrePlaylist)){
-                                        playlist.agregarCancionPlaylist(song, artista)
+                                    for (playlist in userPlaylist){
+                                        if (nomPlayLi.equals(playlist.nombrePlaylist)){
+                                            playlist.agregarCancionPlaylist(song, artista)
+                                        }
                                     }
                                 }
+
                             }
                             "7" -> { //Eliminar cancion de una playlist
                                 var c = 1
@@ -278,8 +290,13 @@ fun main(args: Array<String>) = runBlocking {
                 val user = readLine()
                 print("Ingresa una contraseña: ")
                 val pass = readLine()
-                //
-                users.add(User(user.toString(), pass.toString()))
+                // Se verifica que no se haya presionado enter sin ingresar los datos
+                if(user!!.isEmpty() || pass!!.isEmpty()) {
+                    println("Imposible crear usuario...")
+                    println("Error: se ingresó un campo vacío en usuario o contraseña")
+                } else{
+                    users.add(User(user.toString(), pass.toString()))
+                }
             }
             //Terminar programa
             "3" -> {
