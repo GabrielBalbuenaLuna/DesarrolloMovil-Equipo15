@@ -1,5 +1,6 @@
 data class Artist(
   val fans: Int,
+  val name: String,
   val cancionesTop: cancionesTop,
   val discografia: discografia
 )

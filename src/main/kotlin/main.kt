@@ -1,14 +1,20 @@
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import models.Cancion
 import models.Playlist
 import models.User
+import progressbar.ConsoleProgressBar
 import java.io.File
 import java.io.FileNotFoundException
+import java.security.SecureRandom
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
 
 fun main(args: Array<String>) = runBlocking {
+    //Barra de Progreso
+    val progreso = ConsoleProgressBar()
     // Lista para guardar a los usuarios y contraseñas
     val users = mutableListOf<User>()
     // Listas temporales para guardar los usuarios y contraseñas desde los archivos
@@ -47,28 +53,27 @@ fun main(args: Array<String>) = runBlocking {
     usuarios.clear()    // Se limpian las listas temporales de usuarios y contraseñas que se usaron para leer los archivos
     contras.clear()
 
-    // Map de Artistas
-    var artist = mutableMapOf( "001" to "Metallica", "010" to "Iron Maiden", "020" to "Black Sabbath")
     //Map de Canciones
     var songs = mutableMapOf<Int, Cancion>(
         1 to Cancion("One", "Metallica", "Rock", "and Justice for All", 7.27f, "1988"),
         2 to Cancion("Hero of the day", "Metallica", "Rock", "Load", 4.21f, "1996"),
-        3 to Cancion("The Number of the Beast' You", "Iron Maiden", "Rock", "Number of the Beast", 4.50f, "1982"),
+        3 to Cancion("The Number of the Beast", "Iron Maiden", "Rock", "Number of the Beast", 4.50f, "1982"),
         4 to Cancion("Paranoid", "Black Sabbath", "Rock", "Paranoid", 2.48f, "1970"),
     )
-    // Map de Albumes
-    var records = mutableMapOf( "001" to "and Justice for All", "002" to "Load", "010" to "Number of the Beast", "020" to "Paranoid")
 
-    val interpol = Artist(
-        1263564,
-        cancionesTop(12, "Do I wanna know?", "Sunshine"),
-        discografia("Beautiful", 15, "1996")
-    )
+    //Lista de Objetos Artista
+    val listArt = ArrayList < Artist > ()
+    listArt.add(Artist(rand(3000,5000), "Artic Monkeys", cancionesTop(12, "Do I wanna know?", "AM"), discografia("Tranquility Base", 11, "2018")))
+    listArt.add(Artist(rand(3000,5000), "The Strokes", cancionesTop(11, "Reptilia", "Room on fire"), discografia("The new abnormal", 15, "2020")))
+    listArt.add(Artist(rand(3000,5000), "The Killers",cancionesTop(10, "Mr. Brightside", "Hot Fuss"), discografia("Imploding the mirage", 13, "2020")))
+    listArt.add(Artist(rand(3000,5000), "Dayglow", cancionesTop(9, "Can I Call You Tonigh", "Fuzzybrain"), discografia("Harmony House", 11, "2021")))
+
 
     //Esta lista guardara objetos playlist
     val userPlaylist: MutableList<Playlist> = mutableListOf()
 
     var flag: Boolean = true
+    val pares = {num: Int -> num % 2 == 0} //FUNCION LAMBDA PARA CALCULAR PARES
 
     //Este while permite que se imprima constantemente la primer pantalla del menu
     while(flag){
@@ -91,6 +96,7 @@ fun main(args: Array<String>) = runBlocking {
         when(input){
             //Para logearse se utiliza la primera opcion y se validan credenciales
             "1" -> {
+                var key = pares(rand(2,4)) //Esta variable guarda un true o false dependiendo del numero aleatorio generado
                 var flagTwo: Boolean = true
                 print("Usuario: ")
                 val user = readLine()
@@ -101,24 +107,49 @@ fun main(args: Array<String>) = runBlocking {
                 // Simulacion de request a un servidor
                 try {
                     println("Iniciando recuperación de usuario")
+                    GlobalScope.launch {
+                        progreso.progressBar(19)
+                    }
                     val usuario = users.find{it.username == user}
                     if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
-                        val usuario = fetchUserCoroutine(user.toString(), pass.toString(), true)
+                        val usuario = fetchUserCoroutine(user.toString(), pass.toString(), key) //Pasamos un numero aleatorio, si es par continua de lo contrario da error
                         println(usuario)
                     //Una vez validado el usuario se pasa al siguiente while y se imprime otro menu
                     while(flagTwo){
-                        println(menuLogIn(usuario.username, usuario.playlists.toString())) //Imprimir menu usuario
+                        println(menuLogIn(usuario.username, userPlaylist.size.toString())) //Imprimir menu usuario
                         print("Opcion: ")
                         val opcion = readLine()//Escoger una opcion del menu
                         when(opcion){
                             "1" -> {
-                                for ((k, v) in artist) {
-                                    println("- $v")
+                                println("""
+                                 ==================================
+                                            Artistas
+                                 ==================================
+                                """.trimIndent())
+                                GlobalScope.launch {
+                                    progreso.progressBar(30)
+                                }
+                                val sortedArtist = listArt.sortedWith(compareBy({ it.name })) //Ordenar la lista de Objetos(artistas) con funciones
+                                sortedArtist.forEach{
+                                        a -> println("• ${a.name} -- ${a.fans} fans")
+                                    Thread.sleep(1300)
                                 }
                             }
                             "2" -> {
-                                for ((k, v) in records) {
-                                    println("- $v")
+                                println("""
+                                 ==================================
+                                            Álbumes
+                                 ==================================
+                                """.trimIndent())
+                                GlobalScope.launch {
+                                    progreso.progressBar(70)
+                                }
+                                val sortedArtist = listArt.sortedWith(compareBy({ it.cancionesTop.album })) //Ordenar la lista de Objetos(artistas)
+                                sortedArtist.forEach{
+                                        a -> println("• ${a.cancionesTop.album} -- ${a.name}")
+                                    Thread.sleep(1200)
+                                    println("• ${a.discografia.nombreAlbum} -- ${a.name}")
+                                    Thread.sleep(1200)
                                 }
                             }
                             "3" -> {
@@ -214,7 +245,7 @@ fun main(args: Array<String>) = runBlocking {
                                         nombrePlaylist,
                                         usuario.username,
                                         2,
-                                        31,
+                                        rand(50,300),
                                         mutableMapOf("Evil" to "Interpol", "Someday" to "The Strokes")
                                     )
                                     userPlaylist.add(miPlaylist)
@@ -313,8 +344,11 @@ fun main(args: Array<String>) = runBlocking {
                     fetchUserCoroutine(user.toString(), pass.toString(), false)
                 }
                 } catch (exception: Exception) {
-                    println("Usuario y contraseña no coinciden o no existe usuario")
-                    println("Hubo un fallo: $exception")
+                    if (key == false){
+                        println("Hubo un fallo: $exception")
+                    }else{
+                        println("Usuario y contraseña no coinciden o no existe usuario")
+                    }
                 }
             }
             //Añadir un nuevo usuario
@@ -424,7 +458,7 @@ private fun fetchUser(callback: Callback, username: String, password:String, isS
                 ))
         }
         else {
-            callback.onFailure(Exception("Excepción genérica"))
+            callback.onFailure(Exception("Error 420 (Significa que el numero aleatorio dio falso)"))
         }
     }.start()
 }
@@ -448,4 +482,12 @@ fun escribirArchivo(archivo: File, datos: MutableList<String>){
     archivo.writeText("")
     datos.forEach { archivo.appendText("$it\n") }
     println("La escritura del archivo fue un éxito :)")
+}
+//Funcion para obtener un generador aleatorio criptográficamente fuerte, usando la libreria SecureRandom
+fun rand(start: Int, end: Int): Int {
+    require(start <= end) { "Argumentos no validos!" }
+    val random = SecureRandom()
+    random.setSeed(random.generateSeed(20))
+
+    return random.nextInt(end - start + 1) + start
 }
