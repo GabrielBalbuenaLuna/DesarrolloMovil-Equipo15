@@ -339,6 +339,14 @@ fun main(args: Array<String>) = runBlocking {
             else -> println("Ingresa una opcion valida")
         }
     }
+    // Escritura de usuarios y contraseñas actualizados en los archivos
+    // Vaciamos el contenido de los archivos en las listas temporales antes de escribir los datos
+    users.forEach{
+        usuarios.add(it.username)
+        contras.add(it.password)
+    }
+    escribirArchivo(usersFile,usuarios)
+    escribirArchivo(passFile,contras)
 }
 
 //Imprimir menu de usuario, dependiendo del usuario se imprime un menu con diferentes atributos
@@ -433,4 +441,11 @@ private suspend fun fetchUserCoroutine(username: String, password:String, isSucc
             cancellableContinuation.resumeWithException(exception)
         }
     }, username, password, isSuccess)
+}
+
+fun escribirArchivo(archivo: File, datos: MutableList<String>){
+    println("Iniciando escritura de $archivo...")
+    archivo.writeText("")
+    datos.forEach { archivo.appendText("$it\n") }
+    println("La escritura del archivo fue un éxito :)")
 }
