@@ -1,0 +1,6 @@
+# ignore build
+build
+
+# ignore generated .txt
+passwords.txt
+usuarios.txt
