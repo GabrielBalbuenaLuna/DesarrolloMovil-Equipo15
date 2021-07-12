@@ -20,9 +20,8 @@ fun main(args: Array<String>) = runBlocking {
     val usersFile = File(file1)
     val passFile = File(file2)
     // Leemos los archivos para verificar si ya existen o es necesario crearlos
-    println("Iniciando la lectura de los archivos donde se guardan los usuarios y contraseñas...")
-    // Manejamos la excepción en caso de que no se pueda realizar la lectura de los archivos
-    // en donde se almacenan los usuarios y contraseñas
+    println("Leyendo los archivos donde se guardan los usuarios y contraseñas...")
+    // Exception en caso de que no se pueda realizar la lectura de los archivos en donde se almacenan usuarios y contraseñas
     try {
         val leerUsuarios = usersFile.bufferedReader()// Aqui puede ocurrir la excepcion: FileNotFoundException
         val text1 = leerUsuarios.readLines()
@@ -32,20 +31,20 @@ fun main(args: Array<String>) = runBlocking {
         for(line in text2){ contras.add(line) }
     } catch (e: FileNotFoundException){
         // Creamos nuevos archivos para almacenar a los usuarios y contraseñas
-        println("Error al importar los datos de usuarios y contraseñas (Archivos no encontrados)...")
-        println("Se han creado nuevos archivos para almacenar la información.")
+        println("Error al importar usuarios/contraseñas: $e")
+        println("Se han creado nuevos archivos para guardar la información.")
         usersFile.createNewFile()
         passFile.createNewFile()
         usuarios.add("root")    // Agregamos las contraseñas que se tendrán por default
         contras.add("1234")
     }
 
-    // Se instancia la Lista utilizando la clase usuario
+    // Se instancia la Lista utilizando la clase usuario con los datos leidos desde los archivos
     val tam = usuarios.size-1
     for (num in 0..tam) {
         users.add(User(usuarios[num], contras[num]))
     }
-    usuarios.clear()    // Limpiamos las listas temporales de usuarios y contraseñas que se usaron para leer los archivos
+    usuarios.clear()    // Se limpian las listas temporales de usuarios y contraseñas que se usaron para leer los archivos
     contras.clear()
 
     // Map de Artistas
