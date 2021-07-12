@@ -4,17 +4,51 @@ import models.Cancion
 import models.Playlist
 import models.User
 import java.io.File
+import java.io.FileNotFoundException
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
 
 fun main(args: Array<String>) = runBlocking {
-    //Map para guardar usuarios
-    val users = mutableListOf<User>(
-        User("root", "1234", 120, 2),
-        User("Elias", "5678", 0, 0)
-    )
+    // Lista para guardar a los usuarios y contraseñas
+    val users = mutableListOf<User>()
+    // Listas temporales para guardar los usuarios y contraseñas desde los archivos
+    val usuarios = mutableListOf<String>()
+    val contras = mutableListOf<String>()
+    // Variables para los archivos donde se almacenarán los usuarios y contraseñas
+    val file1 = "usuarios.txt"
+    val file2 = "passwords.txt"
+    val usersFile = File(file1)
+    val passFile = File(file2)
+    // Leemos los archivos para verificar si ya existen o es necesario crearlos
+    println("Iniciando la lectura de los archivos donde se guardan los usuarios y contraseñas...")
+    // Manejamos la excepción en caso de que no se pueda realizar la lectura de los archivos
+    // en donde se almacenan los usuarios y contraseñas
+    try {
+        val leerUsuarios = usersFile.bufferedReader()// Aqui puede ocurrir la excepcion: FileNotFoundException
+        val text1 = leerUsuarios.readLines()
+        for(line in text1){ usuarios.add(line) }
+        val leerPass = passFile.bufferedReader()// Aqui puede ocurrir la excepcion: FileNotFoundException
+        val text2 = leerPass.readLines()
+        for(line in text2){ contras.add(line) }
+    } catch (e: FileNotFoundException){
+        // Creamos nuevos archivos para almacenar a los usuarios y contraseñas
+        println("Error al importar los datos de usuarios y contraseñas (Archivos no encontrados)...")
+        println("Se han creado nuevos archivos para almacenar la información.")
+        usersFile.createNewFile()
+        passFile.createNewFile()
+        usuarios.add("root")    // Agregamos las contraseñas que se tendrán por default
+        contras.add("1234")
+    }
 
-    //Map de Artistas
+    // Se instancia la Lista utilizando la clase usuario
+    val tam = usuarios.size-1
+    for (num in 0..tam) {
+        users.add(User(usuarios[num], contras[num]))
+    }
+    usuarios.clear()    // Limpiamos las listas temporales de usuarios y contraseñas que se usaron para leer los archivos
+    contras.clear()
+
+    // Map de Artistas
     var artist = mutableMapOf( "001" to "Metallica", "010" to "Iron Maiden", "020" to "Black Sabbath")
     //Map de Canciones
     var songs = mutableMapOf<Int, Cancion>(
@@ -23,7 +57,7 @@ fun main(args: Array<String>) = runBlocking {
         3 to Cancion("The Number of the Beast' You", "Iron Maiden", "Rock", "Number of the Beast", 4.50f, "1982"),
         4 to Cancion("Paranoid", "Black Sabbath", "Rock", "Paranoid", 2.48f, "1970"),
     )
-    //Map de Albumes
+    // Map de Albumes
     var records = mutableMapOf( "001" to "and Justice for All", "002" to "Load", "010" to "Number of the Beast", "020" to "Paranoid")
 
     val interpol = Artist(
@@ -68,8 +102,8 @@ fun main(args: Array<String>) = runBlocking {
                 // Simulacion de request a un servidor
                 try {
                     println("Iniciando recuperación de usuario")
-                val usuario = users.find{it.username == user}
-                if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
+                    val usuario = users.find{it.username == user}
+                    if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
                         val usuario = fetchUserCoroutine(user.toString(), pass.toString(), true)
                         println(usuario)
                     //Una vez validado el usuario se pasa al siguiente while y se imprime otro menu
