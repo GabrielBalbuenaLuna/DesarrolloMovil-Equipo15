@@ -1,5 +1,6 @@
 # ignore build
-build/
+build/*
+!build/libs/
 
 # ignore generated .txt
 passwords.txt

@@ -1,18 +1,21 @@
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.suspendCancellableCoroutine
+import javamodels.BarProgress
+import kotlinx.coroutines.*
 import models.Cancion
 import models.Playlist
 import models.User
+import podcast.Podcast
+import podcast.Podcast_DC
 import progressbar.ConsoleProgressBar
 import java.io.File
 import java.io.FileNotFoundException
+import java.lang.Math.random
 import java.security.SecureRandom
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
 
 fun main(args: Array<String>) = runBlocking {
+    val barra = BarProgress
+    barra.main()
     //Barra de Progreso
     val progreso = ConsoleProgressBar()
     // Lista para guardar a los usuarios y contraseñas
@@ -68,6 +71,17 @@ fun main(args: Array<String>) = runBlocking {
     listArt.add(Artist(rand(3000,5000), "The Killers",cancionesTop(10, "Mr. Brightside", "Hot Fuss"), discografia("Imploding the mirage", 13, "2020")))
     listArt.add(Artist(rand(3000,5000), "Dayglow", cancionesTop(9, "Can I Call You Tonigh", "Fuzzybrain"), discografia("Harmony House", 11, "2021")))
 
+    //Lista de Objetos Podcast
+    val listPod = ArrayList < Podcast_DC > ()
+    listPod.add(Podcast_DC("Creativo", "Roberto Mtz", "Sociedad y Cultura", "Descripcion...."))
+    listPod.add(Podcast_DC("La Hora Feliz", "Cojo Feliz", "Comedia", "Descripcion...."))
+    listPod.add(Podcast_DC("El podcast de A F", "Alex Fernandez", "Comedia", "Descripcion...."))
+    listPod.add(Podcast_DC("En cortinas", "Luisito Comunica", "Comedia", "Descripcion...."))
+    listPod.add(Podcast_DC("El pulso de la republica", "Chumel Torres", "Politica", "Descripcion...."))
+
+    //Esta lista guardara objetos podcast
+    val userPodcast: MutableMap<String, String> = mutableMapOf()
+    listPod.forEach { userPodcast[it.nombrePodcast] = it.descripcion }
 
     //Esta lista guardara objetos playlist
     val userPlaylist: MutableList<Playlist> = mutableListOf()
@@ -315,14 +329,22 @@ fun main(args: Array<String>) = runBlocking {
                                             PLAYLISTS
                                  ==================================
                                 """.trimIndent())
+
+                                val sortedArtist = userPlaylist.sortedWith(compareBy({ it.nombrePlaylist })) //Ordenar la lista de Objetos(artistas) con funciones
+
                                 // Se verifica si ya existen playlists añadidas para el usuario
                                 if (userPlaylist.isEmpty()){
                                     println("$user aún no tienes ninguna playlist añadida.")
                                 } else {
+                                    sortedArtist.forEach{
+                                            a -> println("•$c.- ${a.nombrePlaylist}")
+                                        c++
+                                    }
+                                    /*
                                     for (playlist in userPlaylist){
                                         println("$c.- ${playlist.nombrePlaylist}")
                                         c++
-                                    }
+                                    }*/
                                     print("Nombre de la playlist: ")
                                     var nomPlay = readLine().toString()
 
@@ -333,7 +355,26 @@ fun main(args: Array<String>) = runBlocking {
                                     }
                                 }
                             }
-                            "9" -> {
+                            "9" ->{
+                                println("""
+                                 ==================================
+                                            PODCAST
+                                 ==================================
+                                """.trimIndent())
+                                var podcast1 = Podcast(usuario.username)
+                                podcast1.verMisPodcast(userPodcast)
+
+                            }
+                            "10" -> {
+                                println("""
+                                 ==================================
+                                            PODCAST
+                                 ==================================
+                                """.trimIndent())
+                                var podcast1 = Podcast(usuario.username)
+                                podcast1.reproducirPodcast("Creativo")
+                            }
+                            "11" -> {
                                 flagTwo = false
                                 usuario.cerrarSesion()
                             }
@@ -367,6 +408,8 @@ fun main(args: Array<String>) = runBlocking {
             }
             //Terminar programa
             "3" -> {
+                println("Cerrando sesion...")
+                barra.main()
                 println("Proceso terminado...")
                 flag = false
             }
@@ -400,7 +443,9 @@ fun menuLogIn(user: String, playlist: String){
     | 6. Añadir Canción a playlist     |
     | 7. Eliminar cancion de playlist  |
     | 8. Ver models.Playlist           |
-    | 9. Salir                         |
+    | 9. Ver Podcast                   |
+    | 10. Reproducir podcast
+    | 11. Salir                        |
     |                                  |
      ----------------------------------
      """)
