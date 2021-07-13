@@ -1,3 +1,5 @@
+package models
+
 open class Playlist(
   val nombrePlaylist: String,
   private val autorPlaylist: String,
@@ -8,17 +10,17 @@ open class Playlist(
 )
 {
   init{
-    println("--> Playlist creada!")
+    println("--> models.Playlist creada!")
   }
 
-  //Funcion para agregar cancion a la Playlist
+  //Funcion para agregar cancion a la models.Playlist
   fun agregarCancionPlaylist(añadirCancion: String, añadirArtista: String){
     numeroCancionesPlaylist + 1
     playlist[añadirCancion] = añadirArtista
     println("--> Canción añadida a $nombrePlaylist")
   }
 
-  //Funcion para eliminar una cancion de la Playlist
+  //Funcion para eliminar una cancion de la models.Playlist
   fun eliminarCancionPlaylist(cancion: String, artista: String){
     numeroCancionesPlaylist - 1
     playlist.remove(cancion, artista)

@@ -1,0 +1,7 @@
+# ignore build
+build/*
+!build/libs/
+
+# ignore generated .txt
+passwords.txt
+usuarios.txt
