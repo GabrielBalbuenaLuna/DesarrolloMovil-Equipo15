@@ -16,6 +16,7 @@ fun main(args: Array<String>) = runBlocking {
     // -------------Usuarios por defecto-----------
     // -------User: root     Password: 1234--------
     val barra = BarProgress
+    println("Iniciando programa...")
     barra.main()
     //Barra de Progreso
     val progreso = ConsoleProgressBar()
@@ -189,7 +190,7 @@ fun main(args: Array<String>) = runBlocking {
                                 when(readLine()) {
                                     "1" -> {
                                         //Opcion para elegir cancion a reproducir y que se cambie descendentemente
-                                        println("Numero de la cancion: ")
+                                        print("Numero de la cancion: ")
                                         var songNumber = readLine()?.toInt()
                                         if (songNumber != null) {
                                             while (songNumber > 0) {
@@ -204,7 +205,7 @@ fun main(args: Array<String>) = runBlocking {
                                     }
                                     "2" -> {
                                         //Opcion para reproducir cancion y se cambie ascendentemente
-                                        println("Numero de la cancion: ")
+                                        print("Numero de la cancion: ")
                                         val songNumber = readLine()?.toInt()
                                         val songsSize = songs.size
                                         if (songNumber != null) {
@@ -220,7 +221,7 @@ fun main(args: Array<String>) = runBlocking {
                                     "3" -> {
                                         //Modo de repeticion para que se repita la cancion hasta que el usuario desee detenerlo
                                         var modoRepeticion: Boolean = true
-                                        println("Numero de la cancion: ")
+                                        print("Numero de la cancion: ")
                                         val songNumber = readLine()?.toInt()
                                         val chosenSong = songs.get(songNumber)
                                         var cont = 0
@@ -253,11 +254,32 @@ fun main(args: Array<String>) = runBlocking {
                                     }
                                 }
                             }
+                            "4" -> {
+                                val aleatoria = rand(1,5)
+                                when (aleatoria){
+                                    1 -> {
+                                        usuario.reproducirCancion("1901", "Phoenix", "Wolfgang Amadeus Phoenix")
+                                    }
+                                    2 -> {
+                                        usuario.reproducirCancion("L.S.F", "Kasabian", "Kasabian")
+                                    }
+                                    3 -> {
+                                        usuario.reproducirCancion("Hey Boy Hey Girl", "The Chemical Brothers", "Surrender")
+                                    }
+                                    4 ->{
+                                        usuario.reproducirCancion("Song 2", "Blur", "The Best Of")
+                                    }
+                                    5 -> {
+                                        usuario.reproducirCancion("Starlight", "Muse", "Black Holes & Revelations")
+                                    }
+                                }
+
+                            }
                             "5" -> { //Añadir una playlist
-                                print("Nombre de la playlist: ")
+                                print("Ingresa el nombre de la Playlist: ")
                                 var nombrePlaylist = readLine().toString()
 
-                                if(nombrePlaylist!!.isEmpty()) {
+                                if(nombrePlaylist.isNullOrBlank()) {
                                     println("Imposible añadir canción...")
                                     println("Error: se ingresó un campo vacío en la canción o artista")
                                 }else {
@@ -273,13 +295,13 @@ fun main(args: Array<String>) = runBlocking {
                                 }
                             }
                             "6" -> { //Añadir una cancion a la playlist
-                                print("Nombre de la cancion: ")
+                                print("Ingresa el nombre de la canción: ")
                                 var song = readLine().toString()
-                                print("Nombre del artista: ")
+                                print("Ingresa el nombre del artista: ")
                                 var artista = readLine().toString()
 
                                 // Se verifica que no se haya presionado enter sin ingresar los datos
-                                if(song!!.isEmpty() || artista!!.isEmpty()) {
+                                if(song.isNullOrBlank() || artista.isNullOrBlank()) {
                                     println("Imposible añadir canción...")
                                     println("Error: se ingresó un campo vacío en la canción o artista")
                                 } else{
@@ -293,14 +315,26 @@ fun main(args: Array<String>) = runBlocking {
                                         println("$c.- ${playlist.nombrePlaylist}")
                                         c++
                                     }
-                                    print("Nombre de playlist: ")
+                                    print("Ingresa el nombre de la playlist: ")
                                     var nomPlayLi = readLine().toString()
+                                    var bandera = false
 
-                                    for (playlist in userPlaylist){
-                                        if (nomPlayLi.equals(playlist.nombrePlaylist)){
-                                            playlist.agregarCancionPlaylist(song, artista)
+                                    if(!nomPlayLi.isNullOrBlank()){
+                                        for (playlist in userPlaylist){
+                                            if (nomPlayLi.equals(playlist.nombrePlaylist)){
+                                                playlist.agregarCancionPlaylist(song, artista)
+                                                bandera = true
+                                            }
                                         }
+                                    }else{
+                                        println("-> Se ingreso un campo vacio")
                                     }
+                                    if (bandera){
+                                        println("Cancion Añadida!")
+                                    }else{
+                                        println("-> Se ingreso mal el nombre de la Playlist o no existe")
+                                    }
+
                                 }
 
                             }
@@ -315,18 +349,24 @@ fun main(args: Array<String>) = runBlocking {
                                     println("$c.- ${playlist.nombrePlaylist}")
                                     c++
                                 }
-                                print("Nombre de playlist: ")
+                                print("Ingresa el nombre de la playlist: ")
                                 var nomPlay = readLine().toString()
-                                print("Nombre de la cancion: ")
+                                print("Ingresa el nombre de la cancion: ")
                                 var song = readLine().toString()
-                                print("Nombre del artista: ")
+                                print("Ingresa el nombre del artista: ")
                                 var artista = readLine().toString()
 
-                                for (playlist in userPlaylist){
-                                    if (nomPlay.equals(playlist.nombrePlaylist)){
-                                        playlist.eliminarCancionPlaylist(song, artista)
+                                if(!nomPlay.isNullOrBlank() && !song.isNullOrBlank() && !artista.isNullOrBlank()){
+                                    for (playlist in userPlaylist){
+                                        if (nomPlay.equals(playlist.nombrePlaylist)){
+                                            playlist.eliminarCancionPlaylist(song, artista)
+                                        }
                                     }
+                                }else{
+                                    println("Se ingreso un campo vació")
                                 }
+
+
                             }
                             "8" -> { //Ver models.Playlist
                                 var c = 1
@@ -351,7 +391,7 @@ fun main(args: Array<String>) = runBlocking {
                                         println("$c.- ${playlist.nombrePlaylist}")
                                         c++
                                     }*/
-                                    print("Nombre de la playlist: ")
+                                    print("Ingresa el nombre de la playlist: ")
                                     var nomPlay = readLine().toString()
 
                                     for (playlist in userPlaylist) {
@@ -414,9 +454,8 @@ fun main(args: Array<String>) = runBlocking {
             }
             //Terminar programa
             "3" -> {
-                println("Cerrando sesion...")
+                println("Cerrando programa...")
                 barra.main()
-                println("Proceso terminado...")
                 flag = false
             }
             else -> println("Ingresa una opcion valida")
