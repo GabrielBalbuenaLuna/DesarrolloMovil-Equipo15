@@ -14,6 +14,8 @@ import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
 
 fun main(args: Array<String>) = runBlocking {
+    // -------------Usuarios por defecto-----------
+    // -------User: root     Password: 1234--------
     val barra = BarProgress
     barra.main()
     //Barra de Progreso
@@ -44,11 +46,13 @@ fun main(args: Array<String>) = runBlocking {
         println("Se han creado nuevos archivos para guardar la información.")
         usersFile.createNewFile()
         passFile.createNewFile()
-        usuarios.add("root")    // Agregamos las contraseñas que se tendrán por default
-        contras.add("1234")
     }
 
     // Se instancia la Lista utilizando la clase usuario con los datos leidos desde los archivos
+    if (usuarios.size==0) {
+        usuarios.add("root")    // Agregamos las contraseñas que se tendrán por default
+        contras.add("1234")
+    }
     val tam = usuarios.size-1
     for (num in 0..tam) {
         users.add(User(usuarios[num], contras[num]))
@@ -106,6 +110,7 @@ fun main(args: Array<String>) = runBlocking {
 
         val input = readLine()
 
+
         //Switch del menu
         when(input){
             //Para logearse se utiliza la primera opcion y se validan credenciales
@@ -125,6 +130,7 @@ fun main(args: Array<String>) = runBlocking {
                         progreso.progressBar(19)
                     }
                     val usuario = users.find{it.username == user}
+
                     if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
                         val usuario = fetchUserCoroutine(user.toString(), pass.toString(), key) //Pasamos un numero aleatorio, si es par continua de lo contrario da error
                         println(usuario)
@@ -439,12 +445,12 @@ fun menuLogIn(user: String, playlist: String){
     | 2. Ver Albumes                   |
     | 3. Ver Canciones                 |
     | 4. Reproducción aleatoria        |
-    | 5. Añadir models.Playlist        |
+    | 5. Añadir Playlist               |
     | 6. Añadir Canción a playlist     |
     | 7. Eliminar cancion de playlist  |
-    | 8. Ver models.Playlist           |
+    | 8. Ver Playlist                  |
     | 9. Ver Podcast                   |
-    | 10. Reproducir podcast
+    | 10. Reproducir podcast           |
     | 11. Salir                        |
     |                                  |
      ----------------------------------
