@@ -8,7 +8,6 @@ import podcast.Podcast_DC
 import progressbar.ConsoleProgressBar
 import java.io.File
 import java.io.FileNotFoundException
-import java.lang.Math.random
 import java.security.SecureRandom
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.resume
@@ -178,8 +177,12 @@ fun main(args: Array<String>) = runBlocking {
                                             CANCIONES
                                  ==================================
                                 """.trimIndent())
+                                GlobalScope.launch {
+                                    progreso.progressBar(30)
+                                }
                                 for ((k, v) in songs) {
                                     println("$k. ${v.nombreCancion}")
+                                    Thread.sleep(1200)
                                 }
                                 println("==================================")
                                 menuCanciones()
@@ -249,9 +252,6 @@ fun main(args: Array<String>) = runBlocking {
                                         }
                                     }
                                 }
-                            }
-                            "4" -> { //Reproducción aleatoria
-                                usuario.reproducirCancion("Swing Lynn", "Twin Cabins", "I'm sure")
                             }
                             "5" -> { //Añadir una playlist
                                 print("Nombre de la playlist: ")
