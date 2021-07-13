@@ -106,6 +106,7 @@ fun main(args: Array<String>) = runBlocking {
 
         val input = readLine()
 
+
         //Switch del menu
         when(input){
             //Para logearse se utiliza la primera opcion y se validan credenciales
@@ -125,6 +126,7 @@ fun main(args: Array<String>) = runBlocking {
                         progreso.progressBar(19)
                     }
                     val usuario = users.find{it.username == user}
+
                     if(usuario?.username == user.toString() && usuario.password == pass.toString()){ //Verificar que el usuario corresponda a la contraseña
                         val usuario = fetchUserCoroutine(user.toString(), pass.toString(), key) //Pasamos un numero aleatorio, si es par continua de lo contrario da error
                         println(usuario)
@@ -220,7 +222,7 @@ fun main(args: Array<String>) = runBlocking {
                                             chosenSong?.reperirCancion(cont)
                                             //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
-                                            val opcAleatoria = readLine()?.get(0)?.toUpperCase() ?: throw IllegalArgumentException()
+                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
                                                 modoRepeticion = false
                                             }
@@ -235,7 +237,7 @@ fun main(args: Array<String>) = runBlocking {
                                             val chosenSong = songs.get(aleatorio)
                                             //se le da la opcion al usuario para detener la reproduccion
                                             println("\nPulsa p para detener reproduccion o cualquier otra tecla para continuar")
-                                            val opcAleatoria = readLine()?.get(0)?.toUpperCase() ?: throw IllegalArgumentException()
+                                            val opcAleatoria = readLine()?.get(0)?.uppercaseChar() ?: throw IllegalArgumentException()
                                             if(opcAleatoria == 'P') {
                                                 modoAleatorio = false
                                             }
