@@ -72,7 +72,7 @@ BEDU MUSIC es desarrollada usando tecnologías como:
 
 - :gear: **Best Practices**: Flujo de trabajo sólido para mantener el código limpio y estructurado.
 
-## ¿Quienes mantienen y contribuyen a TURI?
+## ¿Quienes mantienen y contribuyen a BEDU MUSIC?
 
 | [<img src="https://raw.githubusercontent.com/raquellvazquez/to-do/develop/src/assets/boy.png" alt="IE / Edge" width="24px" height="24px" />](https://github.com/EliasBautista)</br>Elias Balbuena| [<img src="https://raw.githubusercontent.com/raquellvazquez/to-do/develop/src/assets/girl.png" alt="Safari" width="24px" height="24px" />](https://github.com/PaulinaQuintero)</br>Paulina Quintero| [<img src="https://raw.githubusercontent.com/raquellvazquez/to-do/develop/src/assets/boy.png" alt="Chrome" width="24px" height="24px" />](https://github.com/AdanGabrielBalbuenaLuna)</br>Gabriel Balbuena| [<img src="https://raw.githubusercontent.com/raquellvazquez/to-do/develop/src/assets/boy.png" alt="Safari" width="24px" height="24px" />](https://github.com/AliVillegas95)</br>Ali Villegas ||
 | --- | --- | --- | --- | --- |
